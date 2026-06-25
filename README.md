@@ -1,60 +1,211 @@
-# 📊 Exercício de Análise de Dados com Python
+# 🗃️ Análise de Dados de Vendas com SQL
 
-Este projeto contém um notebook com exercícios práticos de análise de dados utilizando **Python**, com foco em **pandas**, **NumPy**, **matplotlib** e **seaborn**.
+Este repositório contém dados de vendas de uma empresa e exemplos práticos de consultas SQL para análise de dados. Ideal para quem está aprendendo SQL e quer praticar com dados reais de vendas.
 
-O conteúdo é ideal para estudantes e iniciantes que desejam colocar em prática fundamentos da manipulação, visualização e análise exploratória de dados.
+## 📁 O que você vai encontrar
 
-## 🧰 Tecnologias utilizadas
+### Arquivo de Dados
+- **`Dados_vendas_empresa_vF.xlsx`** - Planilha com dados de vendas (pode ser importada para um banco de dados)
 
-- Python 3.x  
-- [Pandas](https://pandas.pydata.org/)  
-- [NumPy](https://numpy.org/)  
-- [Matplotlib](https://matplotlib.org/)  
-- [Seaborn](https://seaborn.pydata.org/)
+### Informações dos Dados
+- **200 registros de vendas** de dezembro/2024 a junho/2025
+- **Faturamento total**: R$ 1.682.529,38
+- **Lucro total**: R$ 673.011,75
+- **25 produtos diferentes** em 5 categorias
+- **Vendas em 7 estados brasileiros**
 
-## 📁 Conteúdo do Notebook
+## 🗂️ Estrutura da Tabela Principal
 
-- Importação de bibliotecas
-- Leitura e visualização de dados
-- Limpeza e transformação de dados
-- Geração de gráficos e insights visuais
-- Análise estatística básica
+A tabela `vendas` contém as seguintes colunas:
 
-## 💻 Como usar
-
-1. Clone este repositório:
-
-```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
+```sql
+CREATE TABLE vendas (
+    data_venda DATE,
+    id_cliente INT,
+    nome_cliente VARCHAR(100),
+    estado CHAR(2),
+    categoria VARCHAR(50),
+    produto VARCHAR(100),
+    quantidade INT,
+    preco_unitario DECIMAL(10,2),
+    total_venda DECIMAL(10,2),
+    ano INT,
+    mes INT,
+    dia INT,
+    dia_semana INT,
+    lucro DECIMAL(10,2),
+    gastos DECIMAL(10,2),
+    ano_mes VARCHAR(10),
+    vip VARCHAR(10)
+);
 ```
 
-2. Acesse o diretório:
+## 📈 Categorias e Estados
 
-```bash
-cd seu-repositorio
+### **5 Categorias de Produtos:**
+- Eletrônicos
+- Alimentos  
+- Brinquedos
+- Vestuário
+- Móveis
+
+### **7 Estados Atendidos:**
+- RS, PR, BA, SP, RJ, PE, MG
+
+## 🎓 Roteiro de Estudos SQL
+
+### **Introdução ao SQL**
+Conceitos básicos e sintaxe fundamental do SQL
+```sql
+-- Exemplo: Visualizar todos os dados
+SELECT * FROM vendas;
 ```
 
-3. Abra o notebook no Jupyter ou Google Colab:
-
-- [Google Colab](https://colab.research.google.com/)
-- Ou localmente com:  
-  ```bash
-  jupyter notebook
-  ```
-
-## 📸 Exemplo de código usado
-
-```python
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+### **Estrutura de um Banco de Dados Relacional**
+Entendendo tabelas, colunas e relacionamentos
+```sql
+-- Exemplo: Estrutura da tabela
+DESCRIBE vendas;
 ```
 
-## 🤝 Contribuições
+### **Introdução à Manipulação de Dados com SQL**
+Comandos básicos SELECT, INSERT, UPDATE, DELETE
+```sql
+-- Exemplo: Selecionar apenas algumas colunas
+SELECT nome_cliente, produto, total_venda FROM vendas;
+```
 
-Contribuições são bem-vindas! Sinta-se livre para abrir uma issue ou pull request com sugestões de melhoria ou novos exercícios.
+### **Filtros em Consultas SQL**
+Usando WHERE para filtrar dados
+```sql
+-- Exemplo: Vendas apenas do estado de SP
+SELECT * FROM vendas WHERE estado = 'SP';
 
-## 📜 Licença
+-- Exemplo: Vendas acima de R$ 1000
+SELECT * FROM vendas WHERE total_venda > 1000;
+```
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
+### **Operadores Lógicos SQL**
+AND, OR, NOT, IN, BETWEEN
+```sql
+-- Exemplo: Vendas de Eletrônicos OU Móveis
+SELECT * FROM vendas 
+WHERE categoria = 'Eletrônicos' OR categoria = 'Móveis';
+
+-- Exemplo: Vendas entre R$ 500 e R$ 2000
+SELECT * FROM vendas 
+WHERE total_venda BETWEEN 500 AND 2000;
+```
+
+### **Quantidade de Registros em uma Tabela**
+Usando COUNT e outras funções de agregação
+```sql
+-- Exemplo: Total de vendas realizadas
+SELECT COUNT(*) as total_vendas FROM vendas;
+
+-- Exemplo: Vendas por categoria
+SELECT categoria, COUNT(*) as quantidade 
+FROM vendas 
+GROUP BY categoria;
+```
+
+### **Funções Matemáticas em SQL**
+SUM, AVG, MAX, MIN
+```sql
+-- Exemplo: Faturamento total
+SELECT SUM(total_venda) as faturamento_total FROM vendas;
+
+-- Exemplo: Ticket médio por estado
+SELECT estado, AVG(total_venda) as ticket_medio 
+FROM vendas 
+GROUP BY estado;
+```
+
+### **Relacionamento entre Tabelas JOIN**
+Conceitos de INNER JOIN
+```sql
+-- Exemplo básico de JOIN (caso tivéssemos tabela de clientes)
+SELECT v.produto, v.total_venda, c.nome_cliente
+FROM vendas v
+INNER JOIN clientes c ON v.id_cliente = c.id;
+```
+
+### **Relacionamento entre 3 Tabelas**
+JOINs mais complexos
+```sql
+-- Exemplo: JOIN entre vendas, clientes e produtos
+SELECT v.data_venda, c.nome_cliente, p.categoria, v.total_venda
+FROM vendas v
+INNER JOIN clientes c ON v.id_cliente = c.id
+INNER JOIN produtos p ON v.produto = p.nome;
+```
+
+### **Relacionamento entre Tabelas e com Filtro**
+Combinando JOINs com WHERE
+```sql
+-- Exemplo: Vendas de clientes VIP em SP
+SELECT v.nome_cliente, v.produto, v.total_venda
+FROM vendas v
+WHERE v.estado = 'SP' AND v.vip = 'vip';
+```
+
+### **LEFT JOIN e CASE WHEN**
+JOINs externos e lógica condicional
+```sql
+-- Exemplo: Classificação de vendas com CASE
+SELECT 
+    produto,
+    total_venda,
+    CASE 
+        WHEN total_venda > 2000 THEN 'Venda Alta'
+        WHEN total_venda > 1000 THEN 'Venda Média'
+        ELSE 'Venda Baixa'
+    END as classificacao
+FROM vendas;
+```
+
+## 🛠️ Como Configurar
+
+### **1. Importar os Dados**
+- Exporte a planilha Excel para CSV
+- Importe para seu SGBD preferido (MySQL, PostgreSQL, SQLite)
+
+## 💡 Dicas para Estudar SQL
+
+### **⚠️ Boas práticas:**
+- **Sempre faça backup** antes de UPDATE/DELETE
+- **Use nomes descritivos** para aliases
+- **Indente seu código** para melhor legibilidade
+- **Teste consultas em pequenas amostras** primeiro
+
+## 📋 Script de Criação da Tabela
+
+```sql
+-- Script completo para criar e popular a tabela
+CREATE TABLE vendas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    data_venda DATE,
+    id_cliente INT,
+    nome_cliente VARCHAR(100),
+    estado CHAR(2),
+    categoria VARCHAR(50),
+    produto VARCHAR(100),
+    quantidade INT,
+    preco_unitario DECIMAL(10,2),
+    total_venda DECIMAL(10,2),
+    ano INT,
+    mes INT,
+    dia INT,
+    dia_semana INT,
+    lucro DECIMAL(10,2),
+    gastos DECIMAL(10,2),
+    ano_mes VARCHAR(10),
+    vip VARCHAR(10)
+);
+
+-- Índices para melhor performance
+CREATE INDEX idx_estado ON vendas(estado);
+CREATE INDEX idx_categoria ON vendas(categoria);
+CREATE INDEX idx_data ON vendas(data_venda);
+CREATE INDEX idx_vip ON vendas(vip);
+```
